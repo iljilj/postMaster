@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Panel</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-group .btn {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+<header th:include="fragments :: topPanel"></header>
+
+<div class="container mt-4 mb-4">
+    <h1 class="mb-4">Admin Panel</h1>
+
+    <form th:method="GET" th:action="@{/admin/create}">
+        <button type="submit" class="btn btn-primary mb-3">New User</button>
+    </form>
+
+    <ul class="nav nav-tabs" style="margin-bottom: 0;">
+        <li class="nav-item">
+            <a th:class="${filter == 'user' || filter==null} ? 'nav-link active' : 'nav-link'" th:href="@{/admin(filter='user')}">All Users</a>
+        </li>
+        <li class="nav-item">
+            <a th:class="${filter == 'admin'} ? 'nav-link active' : 'nav-link'" th:href="@{/admin(filter='admin')}">Admins</a>
+        </li>
+        <li class="nav-item">
+            <a th:class="${filter == 'banned'} ? 'nav-link active' : 'nav-link'" th:href="@{/admin(filter='banned')}">Banned Users</a>
+        </li>
+    </ul>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+
+
+
+                <td th:text="${user.id}"></td>
+                <td><a th:href="@{/user/{username}(username=${user.name})}" th:text="${user.name}"></a></td>
+
+
+                <td class="d-flex justify-content-end align-items-center">
+                    <div class="btn-group" role="group" aria-label="User actions">
+                        <form th:method="POST" th:action="@{/admin/adminStatus}" class="mr-1">
+                            <input type="hidden" name="userId" th:value="${user.id}"/>
+                            <input type="hidden" name="referrer" th:value="${currentURI}"/>
+                            <button th:if="${user.isAdmin}" type="submit" class="btn btn-warning btn-sm">Make User</button>
+                            <button th:if="${!user.isAdmin}" type="submit" class="btn btn-success btn-sm">Make Admin</button>
+                        </form>
+                        <form th:method="POST" th:action="@{/admin/banStatus}" class="mr-1">
+                            <input type="hidden" name="userId" th:value="${user.id}"/>
+                            <input type="hidden" name="referrer" th:value="${currentURI}"/>
+                            <button th:if="${user.isBanned}" type="submit" class="btn btn-info btn-sm">Unban</button>
+                            <button th:if="${!user.isBanned}" type="submit" class="btn btn-danger btn-sm">Ban</button>
+                        </form>
+                        <form th:method="POST" th:action="@{/admin/delete}">
+                            <input type="hidden" name="userId" th:value="${user.id}"/>
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

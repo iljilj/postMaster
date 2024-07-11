@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+    <link href="https://stackpath.bootstrapcdn./bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:fragment="topPanel">
+    <div class="container-fluid bg-dark text-white py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span th:text="${#authentication.name}"></span> with role:
+                <span th:text="${#strings.replace(#authentication.authorities[0].authority, 'ROLE_', '')}"></span>
+            </div>
+            <div class="d-flex">
+                <a th:href="@{/feed}" class="text-white ml-3">Feed</a>
+                <a th:href="@{/user}" class="text-white ml-3">My Page</a>
+                <div sec:authorize="hasRole('ADMIN')" class="d-inline">
+                    <a th:href="@{/admin}" class="text-white ml-3">Admin</a>
+                </div>
+                <a th:href="@{/logout}" class="text-white ml-3">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
